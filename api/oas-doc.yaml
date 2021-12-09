@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Recipe list
+  description: >-
+    Extended documentation: [Postman portal](https://documenter.getpostman.com/view/359472/UVR4Lp5A)  
+  contact:
+    name: PabloFM
+    email: pablofm@us.es
+    url: 'http://www.isa.us.es'
+  license:
+    name: MIT
+    url: 'http://opensource.org/licenses/MIT'
+paths:
+  /api/v1/recipes:
+    get:
+      description: Returns all recipes
+      operationId: getRecipes
+      responses:
+        '200':
+          description: Recipe List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipe'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    post:
+      description: Creates a new recipe
+      operationId: addRecipe
+      responses:
+        '201':
+          description: recipe created
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: recipe
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipe'
+        description: Recipe to be created
+        required: true
+  '/api/v1/recipes/{recipeId}':
+    get:
+      description: Returns a recipe by recipeId
+      operationId: findRecipeByrecipeId
+      parameters:
+        - name: recipeId
+          in: path
+          description: recipeId of recipe to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recipe returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipe'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: deletes a single recipe based on the recipeId
+      operationId: deleteRecipe
+      parameters:
+        - name: recipeId
+          in: path
+          description: ID of recipe to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: recipe deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    put:
+      description: Update a recipe based on its recipeId
+      operationId: updateRecipe
+      parameters:
+        - name: recipeId
+          in: path
+          description: ID of recipe to put
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: recipe updated
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: recipe
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipe'
+        description: Recipe to be updated
+        required: true
+components:
+  schemas:
+    errorModel:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    recipe:
+      type: object
+      properties:
+        recipeId:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        ingredients:
+          type: string
+          minLength: 1
+        complexity:
+          type: string
+          minLength: 1
+      required:
+        - recipeId
+        - description
+        - ingredients
+        - complexity
